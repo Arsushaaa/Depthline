@@ -1,3 +1,6 @@
+#include "Depthline/Core/Game.hpp"
+
 int main() {
-   return 0;
+   Game game;
+   return game.Run();
 }
