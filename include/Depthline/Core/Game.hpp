@@ -3,8 +3,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Clock.hpp>
 
-#include "../World/TileMap.hpp"
-#include "../Entities/Player.hpp"
+#include "../World/World.hpp"
 
 class Game {
 private:
@@ -12,10 +11,8 @@ private:
    sf::Clock clock_;
    sf::View camera_;
    
-
-   Player player_;
    PlayerControls player_controls_;
-   TileMap map_;
+   World world_;
 
    void ProcessEvents();
    void Update(float dt);
@@ -24,7 +21,5 @@ private:
 public:
    Game();
 
-
    int Run();
-
 };

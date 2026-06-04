@@ -14,9 +14,10 @@ private:
 public:
    Player();
 
-   sf::Vector2f GetPosition();
+   const sf::Vector2f GetPosition() const;
    void SetPosition(const sf::Vector2f& position);
-   void Update(const PlayerCommand& command, float dt);
+   sf::Vector2f CalculateMovement(const PlayerCommand& command, float dt) const;
+   sf::FloatRect GetBoundsAt(const sf::Vector2f& position) const;
    void Render(sf::RenderTarget& target) const;
 
 };

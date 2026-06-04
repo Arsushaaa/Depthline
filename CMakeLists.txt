@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 
 project(Depthline
-   VERSION 0.0.2
+   VERSION 0.0.3
    LANGUAGES CXX
 )
 
@@ -32,11 +32,12 @@ find_package(Threads REQUIRED)
 add_executable(Depthline
    app/main.cpp
    src/Core/Game.cpp
-   src/Entities/Enemies.cpp
+   src/Entities/Enemy.cpp
    src/Entities/Player.cpp
-   src/Entities/Weapons.cpp
+   src/Entities/Weapon.cpp
    src/Input/PlayerCommand.cpp
    src/World/TileMap.cpp
+   src/World/World.cpp
 )
 
 target_include_directories(Depthline PRIVATE

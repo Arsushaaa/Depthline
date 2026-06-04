@@ -4,18 +4,17 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
 
-#include "Depthline/World/Maps.hpp"
-
 constexpr float maxDt = 0.5f;
 
 Game::Game()
-   : window_(sf::VideoMode({1980,1080}), "Depthline"),
-   camera_(sf::FloatRect({0.f, 0.f}, {1280.f, 720.f})),
-   map_(64.0f)
+   : window_(
+      sf::VideoMode::getDesktopMode(),
+      "Depthline",
+      sf::State::Fullscreen
+   ),
+   camera_(sf::FloatRect({0.f, 0.f}, {1280.f, 720.f}))
 {
-   map_.LoadFromStrings(map1);
-   player_.SetPosition(map_.GetPlayerSpawn());
-   camera_.setCenter(player_.GetPosition());
+   camera_.setCenter(world_.GetPlayer().GetPosition());
 }
 
 int Game::Run() {
@@ -35,8 +34,7 @@ void Game::Render() {
 
    window_.setView(camera_);
 
-   map_.Render(window_);
-   player_.Render(window_);
+   world_.Render(window_);
 
    window_.display();
 }
@@ -44,9 +42,9 @@ void Game::Render() {
 void Game::Update(float dt) {
    const PlayerCommand command = ReadPlayerInput(player_controls_);
 
-   player_.Update(command, dt);
+   world_.Update(command, dt);
 
-   camera_.setCenter(player_.GetPosition());
+   camera_.setCenter(world_.GetPlayer().GetPosition());
 }
 
 void Game::ProcessEvents() {

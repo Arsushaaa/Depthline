@@ -1,6 +1,7 @@
 #include "Depthline/World/TileMap.hpp"
 
 #include <cstddef>
+#include <cmath>
 #include <vector>
 #include <string>
 #include <stdexcept>
@@ -8,6 +9,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 TileMap::TileMap(float tile_size)
    : tile_size_(tile_size),
@@ -103,6 +105,35 @@ bool TileMap::IsWallTile(int tile_x, int tile_y) const {
    }
 
    return map_[tile_y][tile_x] == '#';
+}
+
+
+bool TileMap::HasCollision(const sf::FloatRect& bounds) const {
+   constexpr float kEpsilon = 0.000001f;
+
+   const sf::Vector2f top_left = {
+      bounds.position.x,
+      bounds.position.y
+   };
+
+   const sf::Vector2f top_right = {
+      bounds.position.x + bounds.size.x - kEpsilon,
+      bounds.position.y
+   };
+
+   const sf::Vector2f bottom_left = {
+      bounds.position.x,
+      bounds.position.y + bounds.size.y - kEpsilon
+   };
+
+   const sf::Vector2f bottom_right = {
+      bounds.position.x + bounds.size.x - kEpsilon,
+      bounds.position.y + bounds.size.y - kEpsilon
+   };
+
+
+   return IsWallAt(top_left) || IsWallAt(top_right) ||
+          IsWallAt(bottom_left) || IsWallAt(bottom_right);
 }
 
 

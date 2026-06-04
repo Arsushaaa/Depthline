@@ -11,7 +11,7 @@ Player::Player()
    player_.setFillColor(sf::Color::Green);
 }
 
-sf::Vector2f Player::GetPosition() {
+const sf::Vector2f Player::GetPosition() const {
    return pos_;
 }
 
@@ -20,7 +20,7 @@ void Player::SetPosition(const sf::Vector2f& position) {
    player_.setPosition(pos_);
 }
 
-void Player::Update(const PlayerCommand& command, float dt) {
+sf::Vector2f Player::CalculateMovement(const PlayerCommand& command, float dt) const {
    sf::Vector2f direction{0.0f, 0.0f};
 
    if (command.move_up) {
@@ -43,9 +43,14 @@ void Player::Update(const PlayerCommand& command, float dt) {
      direction = direction.normalized();
    }
 
-   pos_ += direction * speed_ * dt;
+   return direction * speed_ * dt;
+}
 
-   player_.setPosition(pos_);
+sf::FloatRect Player::GetBoundsAt(const sf::Vector2f& position) const {
+   return {
+      position - player_.getOrigin(),
+      player_.getSize()
+   };
 }
 
 void Player::Render(sf::RenderTarget& target) const {
