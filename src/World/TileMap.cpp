@@ -59,9 +59,14 @@ void TileMap::LoadFromStrings(std::vector<std::string> tiles) {
          }
 
          if (tile == 'E') {
-            enemies_spawn_.push_back({
+            sf::Vector2f spawn{
                static_cast<float>(x) * tile_size_ + tile_size_ / 2.f,
                static_cast<float>(y) * tile_size_ + tile_size_ / 2.f
+            };
+
+            enemies_spawn_.push_back({
+               spawn,
+               EnemyType::Chaser
             });
 
             line.push_back('.');
@@ -139,6 +144,10 @@ bool TileMap::HasCollision(const sf::FloatRect& bounds) const {
 
 sf::Vector2f TileMap::GetPlayerSpawn() const {
    return player_spawn_;
+}
+
+const std::vector<EnemySpawn>& TileMap::GetEnemiesSpawn() const {
+   return enemies_spawn_;
 }
 
 

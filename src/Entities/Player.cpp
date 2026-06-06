@@ -5,7 +5,7 @@
 Player::Player() 
    : player_({20,40}),
    pos_({0.0,0.0}),
-   speed_(200.0f)
+   speed_(250.0f)
 {
    player_.setOrigin({10, 20});
    player_.setFillColor(sf::Color::Green);
