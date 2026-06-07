@@ -18,7 +18,7 @@ struct PlayerControls {
    sf::Keyboard::Scancode move_left = sf::Keyboard::Scancode::A;
    sf::Keyboard::Scancode move_right = sf::Keyboard::Scancode::D;
 
-   sf::Keyboard::Scancode attack = sf::Keyboard::Scancode::Space;
+   sf::Keyboard::Scancode attack = sf::Keyboard::Scancode::P;
    sf::Keyboard::Scancode dash = sf::Keyboard::Scancode::LShift;
 };
 

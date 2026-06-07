@@ -4,12 +4,6 @@
 
 #include "Depthline/Entities/Enemy/EnemyComponents.hpp"
 
-struct EnemyConfig {
-   int max_hp = 100;
-   float move_speed = 100.0f;
-};
-
-
 class Enemy {
 private:
    EnemyConfig config_;

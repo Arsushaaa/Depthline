@@ -33,7 +33,6 @@ add_executable(Depthline
    app/main.cpp
    src/Core/Game.cpp
    src/Entities/Player.cpp
-   src/Entities/Weapon.cpp
    src/Input/PlayerCommand.cpp
    src/World/TileMap.cpp
    src/World/World.cpp
@@ -41,6 +40,10 @@ add_executable(Depthline
    src/Entities/Enemy/Enemy.cpp
    src/Entities/Enemy/EnemyComponents.cpp
    src/Entities/Enemy/EnemyFactory.cpp
+
+   src/Entities/Weapon/Weapon.cpp
+   src/Entities/Weapon/WeaponComponents.cpp
+   src/Entities/Weapon/WeaponFactory.cpp
 )
 
 target_include_directories(Depthline PRIVATE

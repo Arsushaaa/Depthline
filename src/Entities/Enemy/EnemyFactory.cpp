@@ -17,7 +17,8 @@ Enemy EnemyFactory::Create(EnemyType type, const sf::Vector2f& position) {
          return Enemy{
             EnemyConfig{
                .max_hp = 100,
-               .move_speed = 150.0f
+               .move_speed = 150.0f,
+               .attack_cooldown_ = 0.8f
             },
             position,
             EnemyComponents{

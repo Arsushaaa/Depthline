@@ -5,6 +5,13 @@
 #include <SFML/Graphics.hpp>
 
 
+struct EnemyConfig {
+   int max_hp;
+   float move_speed;
+   float attack_cooldown_;
+};
+
+
 struct EnemyBehaviorContext {
    sf::Vector2f self_position;
    sf::Vector2f target_position;
