@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "Depthline/Entities/Enemy/EnemyComponents.hpp"
+#include "Depthline/Entities/Weapon/WeaponFactory.hpp"
 
 Enemy EnemyFactory::Create(EnemyType type, const sf::Vector2f& position) {
    switch (type) {
@@ -17,8 +18,7 @@ Enemy EnemyFactory::Create(EnemyType type, const sf::Vector2f& position) {
          return Enemy{
             EnemyConfig{
                .max_hp = 100,
-               .move_speed = 150.0f,
-               .attack_cooldown_ = 0.8f
+               .move_speed = 150.0f
             },
             position,
             EnemyComponents{
@@ -29,7 +29,8 @@ Enemy EnemyFactory::Create(EnemyType type, const sf::Vector2f& position) {
                .collider = std::make_unique<BoxEnemyCollider>(
                   size, origin
                )
-            }
+            },
+            WeaponFactory::Create(WeaponType::ContactBase)
          };
       }
    }

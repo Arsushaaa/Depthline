@@ -40,7 +40,13 @@ void Game::Render() {
 }
 
 void Game::Update(float dt) {
-   const PlayerCommand command = ReadPlayerInput(player_controls_);
+   PlayerCommand command = ReadPlayerInput(player_controls_);
+
+   const sf::Vector2i mouse_pixel = 
+      sf::Mouse::getPosition(window_);
+
+   command.aim_world_position = 
+      window_.mapPixelToCoords(mouse_pixel, camera_);
 
    world_.Update(command, dt);
 

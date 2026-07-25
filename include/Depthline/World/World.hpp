@@ -9,12 +9,17 @@
 #include "../Input/PlayerCommand.hpp"
 #include "../World/TileMap.hpp"
 #include "../Entities/Enemy/Enemy.hpp"
-#include "../Entities/Weapon/Weapon.hpp"
+
+
+struct EnemyMovementResult {
+   sf::Vector2f position;
+   bool collided_with_player = false;
+};
+
 
 class World {
 private:
    Player player_;
-   Weapon player_weapon_;
    TileMap map_;
 
    std::vector<Enemy> enemies_;
@@ -28,7 +33,7 @@ private:
    template <typename Entity>
    sf::FloatRect GetBounds(const Entity& entity) const;
 
-   sf::Vector2f GetResolvedEnemyPosition(
+   EnemyMovementResult ResolveEnemyMovement(
       const Enemy& enemy,
       const sf::Vector2f& movement
    ) const;
@@ -36,8 +41,7 @@ private:
 public:
    World();
 
-   const Player& GetPlayer();
-   const sf::Vector2f& GetFacingDirection() const;
+   const Player& GetPlayer() const;
 
    void Update(const PlayerCommand& command, float dt);
    void Render(sf::RenderTarget& target);

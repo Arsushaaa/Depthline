@@ -23,6 +23,7 @@ public:
    void SetContext(const WeaponUseContext& context);
 
    bool CanUse() const;
+   
    std::optional<WeaponAction> 
    TryUse(const WeaponUseContext& context);
 

@@ -18,9 +18,24 @@ Weapon WeaponFactory::Create(WeaponType type) {
                   sf::Vector2f{35.0f, 35.0f}
                ),
                .limiter = std::make_unique<CooldownLimiter>(0.5f),
-               .visual = std::make_unique<BaseSwordVisual>(
-                  sf::Vector2f{35.0f, 35.0f},
-                  sf::Color(255, 255, 255, 50)
+               .visual = std::make_unique<HitboxAttackVisual>(
+                  sf::Color(255, 255, 255, 50),
+                  0.04f
+               )
+            }
+         );
+      }
+      case WeaponType::ContactBase: {
+         return Weapon(
+            WeaponComponents{
+               .attack_pattern = std::make_unique<ContactAttackPattern>(
+                  25,
+                  8.0f
+               ),
+               .limiter = std::make_unique<CooldownLimiter>(1.0f),
+               .visual = std::make_unique<HitboxAttackVisual>(
+                  sf::Color(255, 0, 255),
+                  0.06f
                )
             }
          );

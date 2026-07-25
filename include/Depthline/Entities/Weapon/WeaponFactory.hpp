@@ -3,7 +3,8 @@
 #include "Depthline/Entities/Weapon/Weapon.hpp"
 
 enum class WeaponType {
-   SwordBase
+   SwordBase,
+   ContactBase
 };
 
 class WeaponFactory {

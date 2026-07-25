@@ -15,8 +15,7 @@ void Weapon::Update(float dt) {
 }
 
 void Weapon::SetContext(const WeaponUseContext& context) {
-   visual_->SetOwnerPosition(context.owner_position);
-   visual_->SetAimDirection(context.aim_direction);
+   visual_->SetContext(context);
 }
 
 bool Weapon::CanUse() const {
@@ -31,10 +30,12 @@ Weapon::TryUse(const WeaponUseContext& context) {
       return std::nullopt;
    }
 
+   WeaponAction action = attack_pattern_->BuildAction(context);
+
    limiter_->OnUse();
-   visual_->OnUse();
+   visual_->OnUse(action);
    
-   return attack_pattern_->BuildAction(context);
+   return action;
 }
 
 void Weapon::Render(sf::RenderTarget& target) const {

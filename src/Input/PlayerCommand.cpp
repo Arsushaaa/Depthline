@@ -8,7 +8,7 @@ PlayerCommand ReadPlayerInput(const PlayerControls& controls) {
    command.move_left = sf::Keyboard::isKeyPressed(controls.move_left);
    command.move_right = sf::Keyboard::isKeyPressed(controls.move_right);
 
-   command.attack = sf::Keyboard::isKeyPressed(controls.attack);
+   command.attack = sf::Mouse::isButtonPressed(controls.attack);
    command.dash = sf::Keyboard::isKeyPressed(controls.dash);
 
    return command;

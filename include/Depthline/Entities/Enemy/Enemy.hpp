@@ -1,8 +1,12 @@
 #pragma once
 
+#include <memory>
+#include <optional>
+
 #include <SFML/System/Vector2.hpp>
 
 #include "Depthline/Entities/Enemy/EnemyComponents.hpp"
+#include "Depthline/Entities/Weapon/Weapon.hpp"
 
 class Enemy {
 private:
@@ -14,11 +18,18 @@ private:
    std::unique_ptr<IEnemyVisual> visual_;
    std::unique_ptr<IEnemyCollider> collider_;
 
+   sf::Vector2f facing_direction_;
+
+   Weapon weapon_;
+
+   WeaponUseContext GetWeaponContext() const;
+
 public:
    Enemy(
       const EnemyConfig& config,
       const sf::Vector2f& position,
-      EnemyComponents&& components
+      EnemyComponents&& components,
+      Weapon weapon
    );
 
    Enemy(const Enemy&) = delete;
@@ -40,4 +51,7 @@ public:
    void Render(sf::RenderTarget& target) const;
 
    void Update(float dt);
+
+   // функции связанные с оружием
+   std::optional<WeaponAction> TryAttack();
 };

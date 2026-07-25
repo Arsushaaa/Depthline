@@ -1,5 +1,7 @@
 #include "Depthline/Entities/Weapon/WeaponComponents.hpp"
 
+#include <cmath>
+
 #include <SFML/System/Vector2.hpp>
 
 BaseSwordPattern::BaseSwordPattern(
@@ -81,75 +83,54 @@ void CooldownLimiter::OnUse() {
 
 
 
-BaseSwordVisual::BaseSwordVisual(
-   sf::Vector2f hitbox_size,
-   sf::Color color
+HitboxAttackVisual::HitboxAttackVisual(
+   sf::Color color, 
+   float visible_duration
 )
-   : owner_position_({1.0f, 0.0f}),
-   aim_direction_({1.0f, 0.0f}), 
-   hitbox_size_(hitbox_size),
+   : color_(color),
+   visible_duration_(visible_duration),
    visible_timer_(0.0f)
-{
-   rectangles_.resize(5);
+{}
 
-   for (auto& rect : rectangles_) {
-      rect.setSize(hitbox_size_);
-      rect.setOrigin(hitbox_size_ / 2.0f);
-      rect.setFillColor(color);
-   }
-}
+void HitboxAttackVisual::SetContext(
+   const WeaponUseContext&
+) {}
 
-void BaseSwordVisual::RebuildRectangles() {
-   const sf::Vector2f forward = aim_direction_;
-
-   const sf::Vector2f right{
-      -forward.y,
-      forward.x
-   };
-
-   const std::vector<sf::Vector2f> local_cells = {
-      {-1.0f, 0.0f},
-      {1.0f, 0.0f},
-      {1.0f, 1.0f},
-      {-1.0f, 1.0f},
-      {0.0f, 1.0f}
-   };
-
-   for (std::size_t i = 0; i < local_cells.size(); ++i) {
-      const sf::Vector2f& cell = local_cells[i];
-
-      const sf::Vector2f offset =
-         right * cell.x * hitbox_size_.x +
-         forward * cell.y * hitbox_size_.y;
-
-      rectangles_[i].setPosition(owner_position_ + offset);
-   }
-}
-
-void BaseSwordVisual::SetOwnerPosition(const sf::Vector2f& position) {
-   owner_position_ = position;
-   RebuildRectangles();
-}
-
-void BaseSwordVisual::SetAimDirection(const sf::Vector2f& direction) {
-   if (direction != sf::Vector2f{0.0f, 0.0f}) {
-      aim_direction_ = direction.normalized();
-   }
-
-   RebuildRectangles();
-}
-
-void BaseSwordVisual::Update(float dt) {
+void HitboxAttackVisual::Update(float dt) {
    if (visible_timer_ > 0.0f) {
       visible_timer_ -= dt;
    }
+
+   if (visible_timer_ < 0.0f) {
+      visible_timer_ = 0.0f;
+   }
 }
 
-void BaseSwordVisual::OnUse() {
-   visible_timer_ = 0.08f;
+void HitboxAttackVisual::OnUse(
+   const WeaponAction& action
+) {
+   rectangles_.clear();
+   rectangles_.reserve(action.hitboxes.size());
+
+   for (const WeaponHitbox& hitbox : action.hitboxes) {
+      sf::RectangleShape rectangle;
+
+      rectangle.setPosition(hitbox.bounds.position);
+      rectangle.setSize(hitbox.bounds.size);
+      rectangle.setFillColor(color_);
+
+      rectangles_.push_back(rectangle);
+   }
+
+   if (rectangles_.empty()) {
+      visible_timer_ = 0.0f;
+   } 
+   else {
+      visible_timer_ = visible_duration_;
+   }
 }
 
-void BaseSwordVisual::Render(sf::RenderTarget& target) const {
+void HitboxAttackVisual::Render(sf::RenderTarget& target) const {
    if (visible_timer_ <= 0.0f) {
       return;
    }
@@ -158,3 +139,75 @@ void BaseSwordVisual::Render(sf::RenderTarget& target) const {
       target.draw(rect);
    }
 }
+
+ContactAttackPattern::ContactAttackPattern (
+   int damage, 
+   float attack_thickness
+)
+   : damage_(damage),
+   attack_thickness_(attack_thickness)
+{}
+
+WeaponAction ContactAttackPattern::BuildAction(
+   const WeaponUseContext& context
+) const {
+   WeaponAction action;
+   const sf::Vector2f kDirection = context.aim_direction;
+   const sf::FloatRect& kOwner = context.owner_bounds;
+
+   if (kDirection == sf::Vector2f{0.0f, 0.0f}) {
+      return action;
+   }
+
+   sf::Vector2f hitbox_position;
+   sf::Vector2f hitbox_size;
+   
+   if (std::abs(kDirection.x) > std::abs(kDirection.y)) {
+      hitbox_size = {
+         attack_thickness_,
+         kOwner.size.y
+      };
+
+      if (kDirection.x > 0.0f) {
+         // Справа
+         hitbox_position = {
+            kOwner.position.x + kOwner.size.x,
+            kOwner.position.y
+         };
+      } else {
+         // Слева
+         hitbox_position = {
+            kOwner.position.x - attack_thickness_,
+            kOwner.position.y
+         };
+      }
+   } 
+   else {
+      hitbox_size = {
+         kOwner.size.x,
+         attack_thickness_
+      };
+
+      if (kDirection.y > 0.0f) {
+         // Снизу
+         hitbox_position = {
+            kOwner.position.x,
+            kOwner.position.y + kOwner.size.y
+         };
+      } else {
+         // Сверху
+         hitbox_position = {
+            kOwner.position.x,
+            kOwner.position.y - attack_thickness_
+         };
+      }
+   }
+
+   action.hitboxes.push_back({
+      sf::FloatRect{hitbox_position, hitbox_size},
+      damage_
+   });
+
+   return action;
+}
+

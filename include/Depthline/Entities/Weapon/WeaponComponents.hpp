@@ -8,6 +8,7 @@
 struct WeaponUseContext {
    sf::Vector2f owner_position;
    sf::Vector2f aim_direction;
+   sf::FloatRect owner_bounds;
 };
 
 struct WeaponHitbox {
@@ -44,11 +45,19 @@ class IWeaponVisual {
 public:
    virtual ~IWeaponVisual() = default;
 
-   virtual void SetOwnerPosition(const sf::Vector2f& position) = 0;
-   virtual void SetAimDirection(const sf::Vector2f&) {}
-   virtual void Update(float) {}
-   virtual void OnUse() {}
-   virtual void Render(sf::RenderTarget& target) const = 0;
+   virtual void SetContext(
+      const WeaponUseContext& context
+   ) = 0;
+
+   virtual void Update(float dt) = 0;
+
+   virtual void OnUse(
+      const WeaponAction& action
+   ) = 0;
+
+   virtual void Render(
+      sf::RenderTarget& target
+   ) const = 0;
 };
 
 
@@ -94,25 +103,42 @@ public:
    void OnUse() override;
 };
 
-class BaseSwordVisual : public IWeaponVisual {
+class HitboxAttackVisual : public IWeaponVisual {
 private:
    std::vector<sf::RectangleShape> rectangles_;
-   sf::Vector2f owner_position_;
-   sf::Vector2f aim_direction_;
-   sf::Vector2f hitbox_size_;
+   sf::Color color_;
+   float visible_duration_;
    float visible_timer_;
 
-   void RebuildRectangles();
-
 public:
-   BaseSwordVisual(
-      sf::Vector2f hitbox_size,
-      sf::Color color
+   HitboxAttackVisual(
+      sf::Color color, 
+      float visible_duration
    );
 
-   void SetOwnerPosition(const sf::Vector2f& position) override;
-   void SetAimDirection(const sf::Vector2f& direction) override;
+   void SetContext(
+      const WeaponUseContext&
+   ) override;
+
    void Update(float dt) override;
-   void OnUse() override;
+
+   void OnUse(const WeaponAction& action) override;
+
    void Render(sf::RenderTarget& target) const override;
+};
+
+class ContactAttackPattern : public IWeaponAttackPattern {
+private:
+   int damage_;
+   float attack_thickness_;
+
+public:
+   ContactAttackPattern(
+      int damage, 
+      float attack_thickness
+   );
+
+   WeaponAction BuildAction(
+      const WeaponUseContext& context
+   ) const override;
 };

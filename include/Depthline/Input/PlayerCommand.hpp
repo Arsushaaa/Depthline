@@ -10,6 +10,8 @@ struct PlayerCommand {
 
    bool attack = false;
    bool dash = false;
+
+   sf::Vector2f aim_world_position{0.0f, 0.0f};
 };
 
 struct PlayerControls {
@@ -18,7 +20,7 @@ struct PlayerControls {
    sf::Keyboard::Scancode move_left = sf::Keyboard::Scancode::A;
    sf::Keyboard::Scancode move_right = sf::Keyboard::Scancode::D;
 
-   sf::Keyboard::Scancode attack = sf::Keyboard::Scancode::P;
+   sf::Mouse::Button attack = sf::Mouse::Button::Left;
    sf::Keyboard::Scancode dash = sf::Keyboard::Scancode::LShift;
 };
 

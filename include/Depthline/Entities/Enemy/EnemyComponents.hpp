@@ -8,7 +8,6 @@
 struct EnemyConfig {
    int max_hp;
    float move_speed;
-   float attack_cooldown_;
 };
 
 
